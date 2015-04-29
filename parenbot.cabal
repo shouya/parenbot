@@ -19,6 +19,19 @@ executable parenbot
   main-is:             Main.hs
   -- other-modules:
   -- other-extensions:
-  build-depends:       base >=4.7 && <4.8, twitter-conduit
+  build-depends:       base >=4.7 && <4.8,
+                       twitter-conduit,
+                       authenticate-oauth,
+                       http-conduit,
+                       text,
+                       conduit,
+                       bytestring,
+                       transformers,
+                       resourcet,
+                       twitter-types-lens,
+                       lens,
+                       monad-control,
+                       data-default,
+                       aeson
   -- hs-source-dirs:
   default-language:    Haskell2010
