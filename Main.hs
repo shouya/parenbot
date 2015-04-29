@@ -66,7 +66,7 @@ takeAction (SStatus st) = case matchParenT stText of
                            Just t  -> callRequest $ replyTo st (t <> face)
                            Nothing -> return ()
   where stText = st ^. statusText
-        face   = "○(￣□￣○)"
+        face   = "○(￣□￣○) #parenbot"
 takeAction _            = return ()
 
 
