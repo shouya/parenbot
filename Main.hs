@@ -8,19 +8,15 @@ import Web.Twitter.Types.Lens
 
 import Control.Lens
 import Control.Monad.IO.Class
-import Control.Monad.Trans.Control
-import Control.Monad.Trans.Resource
 import qualified Data.ByteString.Char8 as B8
 import qualified Data.Conduit as C
 import qualified Data.Conduit.List as CL
 import Data.Default
 import qualified Data.Text as T
 import Data.Text (Text)
-import qualified Data.Text.IO as T
 import Network.HTTP.Conduit
 import System.IO (hFlush, stdout)
 import Web.Authenticate.OAuth (OAuth(..), Credential(..))
-import qualified Web.Authenticate.OAuth as OA
 import System.Environment (getEnv)
 import Data.Functor
 import Data.Aeson.Types
@@ -63,10 +59,12 @@ main = do
 
 takeAction :: StreamingAPI -> IO ()
 takeAction (SStatus st) = case matchParenT stText of
-                           Just t  -> callRequest $ replyTo st (t <> face)
+                           Just t  -> callRequest $ replyTo st (tweet t)
                            Nothing -> return ()
-  where stText = st ^. statusText
-        face   = "○(￣□￣○) #parenbot"
+  where stText  = st ^. statusText
+        crop    = T.take (140 - length face - 1)
+        tweet t = crop t <> T.pack face
+        face    = "○(￣□￣○)"
 takeAction _            = return ()
 
 
