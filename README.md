@@ -13,3 +13,8 @@ A twitter bot that hates unmatched parentheses<sup>*</sup>.
 
 * follow/unfollow by DM
 * mention everyone involved
+
+
+## Acknowledgement
+
+this project is a 山寨貨 of [scturtle/parenbot](https://github.com/scturtle/parenbot) for twitter.
