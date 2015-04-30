@@ -29,7 +29,6 @@ matchParen input =
            _ | c `elem` leftParens  -> return (c:st)
            _ | c `elem` rightParens -> mst
              where mst | null st   = Nothing
-                       | otherwise =
-                           lookup (head st) parenMap >> return (tail st)
+                       | otherwise = return (tail st)
            _                        -> return st
         parenMap = parseList parenList
