@@ -1,0 +1,22 @@
+sudo: false
+language: generic
+cache:
+  directories:
+  - "$HOME/.ghc"
+  - "$HOME/.cabal"
+  - "$HOME/.stack"
+
+install:
+- curl -sSL https://get.haskellstack.org/ | sh
+
+script:
+- stack build --install-ghc --executable-stripping -v
+
+deploy:
+  provider: releases
+  api_key:
+    secure: FW/mVx1tDzyl4gGL/XKvW839Of3iMQWsqN+ekg1sk2w4hdaAWh1JrMJK0e1F3XTI83k9rBoaYk5o1RIggC2hUBnLjQvtrocC4xg3B+/BRlF3cWaRlNiIsVVz54WjGHYbR425QVdTNApEEElRMEbbCvyJM2brxtNZdxwuOZrX3k8=
+  file: 'dist/build/parenbot/parenbot'
+  on:
+    repo: shouya/parenbot
+
