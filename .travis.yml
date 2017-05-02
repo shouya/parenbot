@@ -6,17 +6,34 @@ cache:
   - "$HOME/.cabal"
   - "$HOME/.stack"
 
-install:
-- curl -sSL https://get.haskellstack.org/ | sh
+addons:
+  apt:
+    packages:
+      - g++
+      - gcc
+      - libc6-dev
+      - libffi-dev
+      - libgmp-dev
+      - make
+      - xz-utils
+      - zlib1g-dev
+      - git
+      - gnupg
+
+before_install:
+- mkdir -p ~/.local/bin
+- export PATH=$HOME/.local/bin:$PATH
+- travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
 
 script:
-- stack build --install-ghc --executable-stripping -v
+- env
+- stack build --install-ghc --executable-stripping --copy-bins -v
 
 deploy:
   provider: releases
   api_key:
     secure: FW/mVx1tDzyl4gGL/XKvW839Of3iMQWsqN+ekg1sk2w4hdaAWh1JrMJK0e1F3XTI83k9rBoaYk5o1RIggC2hUBnLjQvtrocC4xg3B+/BRlF3cWaRlNiIsVVz54WjGHYbR425QVdTNApEEElRMEbbCvyJM2brxtNZdxwuOZrX3k8=
-  file: 'dist/build/parenbot/parenbot'
+  file: "$HOME/.local/bin/parenbot"
   on:
     repo: shouya/parenbot
 
