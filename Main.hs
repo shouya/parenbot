@@ -3,11 +3,13 @@
 
 module Main where
 
-import Web.Twitter.Conduit
+import Web.Twitter.Conduit.Parameters
+import Web.Twitter.Conduit hiding (inReplyToStatusId)
 import Web.Twitter.Types.Lens
 
 import Control.Lens
 import Control.Monad.IO.Class
+import Control.Monad.Trans.Resource
 import qualified Data.ByteString.Char8 as B8
 import qualified Data.Conduit as C
 import qualified Data.Conduit.List as CL
@@ -52,7 +54,8 @@ main :: IO ()
 main = do
     twInfo <- getTWInfoFromEnv
     putStrLn $ "starto"
-    withManager $ \mgr -> do
+    mgr <- newManager tlsManagerSettings
+    runResourceT $ do
       src <- stream twInfo mgr userstream
       src C.$$+- CL.mapM_ (liftIO . takeAction)
 
@@ -71,16 +74,15 @@ takeAction _            = return ()
 callRequest :: (FromJSON b) => APIRequest a b -> IO ()
 callRequest req = do
   twInfo <- getTWInfoFromEnv
-  withManager $ \mgr -> do
-    call twInfo mgr req
-    return ()
+  mgr <- newManager tlsManagerSettings
+  call twInfo mgr req
+  return ()
 
 
 replyTo :: Status -> T.Text -> APIRequest StatusesUpdate Status
 replyTo t text = update tweetText & inReplyToStatusId ?~ (t ^. statusId)
   where tweetText = "@" <> t ^. statusUser ^. userScreenName <>
                     " " <> text
-
 
 favTweet :: Status -> APIRequest FavoritesCreate Status
 favTweet t = favoritesCreate (t ^. statusId)
